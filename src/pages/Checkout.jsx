@@ -407,7 +407,7 @@ const Checkout = () => {
             </Col>
 
             <Col lg={4}>
-              <Card className="border rounded-3 position-sticky" style={{ top: '1.5rem', borderColor: '#d9dced', backgroundColor: '#e5edfc' }}>
+              <Card className="checkout-order-summary border rounded-3 position-sticky" style={{ top: '1.5rem', borderColor: '#d9dced', backgroundColor: '#e5edfc' }}>
                 <Card.Body className="p-3 p-md-4">
                   <h2 className="h5 fw-bold mb-3">Order Summary</h2>
                   <p className="small text-secondary mb-3">{itemCount} {itemCount === 1 ? 'item' : 'items'}</p>

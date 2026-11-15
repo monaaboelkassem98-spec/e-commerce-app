@@ -196,7 +196,7 @@ const ProductDetails = () => {
 
                 <div
                   className="position-relative flex-grow-1 rounded-3 border bg-white p-3 p-md-4 order-1 order-sm-2"
-                  style={{ minHeight: '340px', height: 'min(55vw, 480px)' }}
+                  style={{ height: 'clamp(240px, 55vw, 480px)' }}
                 >
                   <img
                     src={activeImage || product.thumbnail}

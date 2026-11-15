@@ -36,7 +36,7 @@ const ShopStreamNavbar = () => {
   };
 
   return (
-    <Navbar expand="md" className="shopstream-navbar bg-white border-bottom sticky-top">
+    <Navbar expand="lg" className="shopstream-navbar bg-white border-bottom sticky-top">
       <Container fluid className="px-3 px-lg-4">
         <Navbar.Brand as={NavLink} to="/" className="shopstream-brand fw-bold">
           <span aria-hidden="true" className="me-2">🛍️</span>

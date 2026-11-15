@@ -66,7 +66,7 @@ const Register = () => {
           </Form.Group>
 
           <Row className="mb-3">
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <Form.Group controlId="formUsername">
                 <Form.Label className="small fw-semibold text-secondary">Username</Form.Label>
                 <Form.Control 
@@ -79,7 +79,7 @@ const Register = () => {
                 />
               </Form.Group>
             </Col>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <Form.Group controlId="formEmail">
                 <Form.Label className="small fw-semibold text-secondary">Email Address</Form.Label>
                 <Form.Control 
