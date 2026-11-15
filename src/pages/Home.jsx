@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
 import { Link, useLocation } from 'react-router-dom';
@@ -12,9 +12,13 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retryCount, setRetryCount] = useState(0);
-  const [cartMessage, setCartMessage] = useState('');
+  const [cartError, setCartError] = useState('');
+  const [addedProductId, setAddedProductId] = useState(null);
+  const addedTimeout = useRef(null);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  useEffect(() => () => window.clearTimeout(addedTimeout.current), []);
 
   useEffect(() => {
     if (location.hash === '#categories') {
@@ -86,9 +90,13 @@ const Home = () => {
   const handleAddToCart = (product) => {
     try {
       addCartItem(product);
-      setCartMessage(`${product.title} was added to your cart.`);
+      setCartError('');
+      setAddedProductId(product.id);
+      window.clearTimeout(addedTimeout.current);
+      addedTimeout.current = window.setTimeout(() => setAddedProductId(null), 2000);
     } catch {
-      setCartMessage('Your item could not be added. Please try again.');
+      setAddedProductId(null);
+      setCartError('Your item could not be added. Please try again.');
     }
   };
 
@@ -102,10 +110,10 @@ const Home = () => {
     <div style={{ backgroundColor: '#f7f8ff', color: '#182234' }}>
       <ShopStreamNavbar />
 
-      {cartMessage && (
+      {cartError && (
         <Container className="pt-3">
-              <Alert variant="success" dismissible onClose={() => setCartMessage('')} className="mb-0">
-                ✅ {cartMessage} <Alert.Link as={Link} to="/cart">View cart</Alert.Link>
+          <Alert variant="danger" dismissible onClose={() => setCartError('')} className="mb-0">
+            {cartError}
           </Alert>
         </Container>
       )}
@@ -280,13 +288,24 @@ const Home = () => {
                               >
                                 Details
                               </Button>
-                              <Button
-                                size="sm"
-                                onClick={() => handleAddToCart(product)}
-                                style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
-                              >
-                                <FiShoppingCart aria-hidden="true" className="me-1" /> Add to Cart
-                              </Button>
+                              <div className="position-relative">
+                                {addedProductId === product.id && (
+                                  <span
+                                    className="position-absolute bottom-100 start-50 translate-middle-x mb-1 badge text-bg-success text-nowrap"
+                                    role="status"
+                                    aria-live="polite"
+                                  >
+                                    ✓ Added!
+                                  </span>
+                                )}
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleAddToCart(product)}
+                                  style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
+                                >
+                                  <FiShoppingCart aria-hidden="true" className="me-1" /> Add to Cart
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </Card.Body>

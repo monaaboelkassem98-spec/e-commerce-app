@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Card, Col, Container, Nav, Row, Spinner } from 'react-bootstrap';
 import { FiArrowRight, FiHeadphones, FiHeart, FiRefreshCw, FiShield, FiTruck } from 'react-icons/fi';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -27,8 +27,11 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [activeTab, setActiveTab] = useState('specifications');
   const [isFavorite, setIsFavorite] = useState(false);
-  const [cartMessage, setCartMessage] = useState('');
+  const [showAdded, setShowAdded] = useState(false);
   const [cartError, setCartError] = useState('');
+  const addedTimeout = useRef(null);
+
+  useEffect(() => () => window.clearTimeout(addedTimeout.current), []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -110,9 +113,11 @@ const ProductDetails = () => {
     try {
       addCartItem(product, quantity);
       setCartError('');
-      setCartMessage(`${quantity} × ${product.title} added to your cart.`);
+      setShowAdded(true);
+      window.clearTimeout(addedTimeout.current);
+      addedTimeout.current = window.setTimeout(() => setShowAdded(false), 2000);
     } catch {
-      setCartMessage('');
+      setShowAdded(false);
       setCartError('We could not add this item to your cart. Please try again.');
     }
   };
@@ -122,7 +127,7 @@ const ProductDetails = () => {
       addCartItem(product, quantity);
       navigate('/cart');
     } catch {
-      setCartMessage('');
+      setShowAdded(false);
       setCartError('We could not add this item to your cart. Please try again.');
     }
   };
@@ -160,11 +165,6 @@ const ProductDetails = () => {
             <span className="fw-semibold">{product.title}</span>
           </nav>
 
-          {cartMessage && (
-            <Alert variant="success" dismissible onClose={() => setCartMessage('')}>
-              {cartMessage} <Alert.Link as={Link} to="/cart">View cart</Alert.Link>
-            </Alert>
-          )}
           {cartError && (
             <Alert variant="danger" dismissible onClose={() => setCartError('')}>
               {cartError}
@@ -299,14 +299,25 @@ const ProductDetails = () => {
                       +
                     </Button>
                   </div>
-                  <Button
-                    className="flex-grow-1 fw-semibold"
-                    onClick={handleAddToCart}
-                    disabled={product.stock === 0}
-                    style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
-                  >
-                    Add to Cart
-                  </Button>
+                  <div className="position-relative flex-grow-1">
+                    {showAdded && (
+                      <span
+                        className="position-absolute bottom-100 start-50 translate-middle-x mb-1 badge text-bg-success text-nowrap"
+                        role="status"
+                        aria-live="polite"
+                      >
+                        ✓ Added!
+                      </span>
+                    )}
+                    <Button
+                      className="w-100 fw-semibold"
+                      onClick={handleAddToCart}
+                      disabled={product.stock === 0}
+                      style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
                 </div>
               </div>
               <Button

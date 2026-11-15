@@ -1,12 +1,20 @@
+import { useEffect, useRef, useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { addCartItem } from '../services/cartService';
 
-const ProductCard = ({ product, onAddToCart }) => {
+const ProductCard = ({ product }) => {
+  const [showAdded, setShowAdded] = useState(false);
+  const addedTimeout = useRef(null);
+
+  useEffect(() => () => window.clearTimeout(addedTimeout.current), []);
+
   const handleAddToCart = () => {
     addCartItem(product);
-    onAddToCart?.(product);
+    setShowAdded(true);
+    window.clearTimeout(addedTimeout.current);
+    addedTimeout.current = window.setTimeout(() => setShowAdded(false), 2000);
   };
 
   return (
@@ -61,14 +69,25 @@ const ProductCard = ({ product, onAddToCart }) => {
             >
               Details <FiArrowRight aria-hidden="true" className="ms-1" />
             </Button>
-            <Button
-              size="sm"
-              className="px-2 fw-medium"
-              onClick={handleAddToCart}
-              style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
-            >
-              <FiShoppingCart aria-hidden="true" className="me-1" /> Add
-            </Button>
+            <div className="position-relative">
+              {showAdded && (
+                <span
+                  className="position-absolute bottom-100 start-50 translate-middle-x mb-1 badge text-bg-success text-nowrap"
+                  role="status"
+                  aria-live="polite"
+                >
+                  ✓ Added!
+                </span>
+              )}
+              <Button
+                size="sm"
+                className="px-2 fw-medium"
+                onClick={handleAddToCart}
+                style={{ backgroundColor: '#3825d5', borderColor: '#3825d5' }}
+              >
+                <FiShoppingCart aria-hidden="true" className="me-1" /> Add
+              </Button>
+            </div>
           </div>
         </div>
       </Card.Body>

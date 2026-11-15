@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Col, Container, Form, Pagination, Row, Spinner } from 'react-bootstrap';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ShopStreamNavbar from '../components/ShopStreamNavbar';
 import ShopStreamFooter from '../components/ShopStreamFooter';
@@ -22,7 +22,6 @@ const Products = () => {
   const [sortOrder, setSortOrder] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [retryCount, setRetryCount] = useState(0);
-  const [cartMessage, setCartMessage] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(
     () => window.matchMedia('(min-width: 992px)').matches,
   );
@@ -129,10 +128,6 @@ const Products = () => {
     setSortOrder('newest');
   };
 
-  const handleAddToCart = (product) => {
-    setCartMessage(`${product.title} was added to your cart.`);
-  };
-
   const handleSortChange = (event) => {
     setCurrentPage(1);
     setSortOrder(event.target.value);
@@ -179,14 +174,6 @@ const Products = () => {
   return (
     <div className="d-flex flex-column min-vh-100" style={{ backgroundColor: '#f7f8ff', color: '#182234' }}>
       <ShopStreamNavbar />
-
-      {cartMessage && (
-        <Container fluid className="px-3 px-lg-4 pt-3">
-          <Alert variant="success" dismissible onClose={() => setCartMessage('')} className="mb-0">
-            {cartMessage} <Alert.Link as={Link} to="/cart">View cart</Alert.Link>
-          </Alert>
-        </Container>
-      )}
 
       <main className="flex-grow-1">
         <Container fluid className="px-3 px-lg-4 py-4">
@@ -332,7 +319,7 @@ const Products = () => {
                       <Row className="g-3">
                         {visibleProducts.map((product) => (
                           <Col key={product.id} xs={12} sm={6} xl={4}>
-                            <ProductCard product={product} onAddToCart={handleAddToCart} />
+                            <ProductCard product={product} />
                           </Col>
                         ))}
                       </Row>
