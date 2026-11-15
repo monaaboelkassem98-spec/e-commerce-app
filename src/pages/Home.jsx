@@ -324,7 +324,7 @@ const Home = () => {
                           aria-label="Email address"
                           className="py-2"
                         />
-                        <Button type="submit" variant="success" className="px-4 fw-semibold">
+                        <Button type="submit" variant="success" className="px-4 fw-semibold text-nowrap flex-shrink-0">
                           Join Now
                         </Button>
                       </Form>
