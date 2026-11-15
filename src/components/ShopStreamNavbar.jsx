@@ -38,20 +38,20 @@ const ShopStreamNavbar = () => {
   return (
     <Navbar expand="md" className="shopstream-navbar bg-white border-bottom sticky-top">
       <Container fluid className="px-3 px-lg-4">
-        <Navbar.Brand as={NavLink} to="/home" className="shopstream-brand fw-bold">
+        <Navbar.Brand as={NavLink} to="/" className="shopstream-brand fw-bold">
           <span aria-hidden="true" className="me-2">🛍️</span>
           ShopStream
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="shopstream-navigation" aria-label="Toggle navigation" />
         <Navbar.Collapse id="shopstream-navigation">
           <Nav className="shopstream-main-nav align-items-md-center justify-content-md-center gap-md-2">
-            <Nav.Link as={NavLink} to="/home" className="shopstream-nav-link">
+            <Nav.Link as={NavLink} to="/" className="shopstream-nav-link">
               <FiHome aria-hidden="true" /> Home
             </Nav.Link>
             <Nav.Link as={NavLink} to="/products" className="shopstream-nav-link">
               <FiGrid aria-hidden="true" /> Products
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/home#categories" className="shopstream-nav-link">
+            <Nav.Link as={NavLink} to="/#categories" className="shopstream-nav-link">
               <FiGrid aria-hidden="true" /> Categories
             </Nav.Link>
           </Nav>

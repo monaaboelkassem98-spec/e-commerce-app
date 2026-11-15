@@ -151,7 +151,7 @@ const ProductDetails = () => {
       <main>
         <Container fluid className="px-3 px-lg-4 py-4">
           <nav aria-label="Breadcrumb" className="small mb-4">
-            <Link to="/home" className="text-secondary text-decoration-none">Home</Link>
+            <Link to="/" className="text-secondary text-decoration-none">Home</Link>
             <span className="mx-2 text-secondary" aria-hidden="true">›</span>
             <Link to="/products" className="text-secondary text-decoration-none text-capitalize">
               {formatCategory(product.category)}

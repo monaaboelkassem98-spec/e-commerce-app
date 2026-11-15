@@ -7,7 +7,7 @@ const ShopStreamFooter = () => (
     <Container fluid className="px-3 px-lg-4 py-3">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div>
-          <Link to="/home" className="text-decoration-none fw-bold small" style={{ color: '#3523d2' }}>
+          <Link to="/" className="text-decoration-none fw-bold small" style={{ color: '#3523d2' }}>
             ShopStream
           </Link>
           <p className="text-secondary small mb-0 mt-1">© 2024 ShopStream Inc. All rights reserved.</p>
