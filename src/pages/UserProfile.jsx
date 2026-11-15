@@ -280,12 +280,12 @@ const UserProfile = () => {
                 <h1 className="h6 fw-bold mb-1" style={{ color: '#3925d5' }}>Account</h1>
                 <p className="text-secondary small mb-3">Manage your settings</p>
                 <hr className="mt-0" />
-                <nav className="d-flex flex-column gap-2" aria-label="Account sections">
+                <nav className="profile-sections-nav d-flex flex-column gap-2" aria-label="Account sections">
                   {sections.map((section) => (
                     <Button
                       key={section.id}
                       variant={activeSection === section.id ? 'primary' : 'light'}
-                      className="text-start d-flex align-items-center gap-2 border-0 small"
+                      className="profile-section-button text-start d-flex align-items-center gap-2 border-0 small"
                       onClick={() => {
                         setActiveSection(section.id);
                         setSuccess('');

@@ -23,6 +23,9 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [retryCount, setRetryCount] = useState(0);
   const [cartMessage, setCartMessage] = useState('');
+  const [filtersOpen, setFiltersOpen] = useState(
+    () => window.matchMedia('(min-width: 992px)').matches,
+  );
 
   useEffect(() => {
     let active = true;
@@ -53,6 +56,19 @@ const Products = () => {
       active = false;
     };
   }, [retryCount]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 992px)');
+    const updateFiltersOpen = (event) => setFiltersOpen(event.matches);
+
+    if (desktopQuery.addEventListener) {
+      desktopQuery.addEventListener('change', updateFiltersOpen);
+      return () => desktopQuery.removeEventListener('change', updateFiltersOpen);
+    }
+
+    desktopQuery.addListener(updateFiltersOpen);
+    return () => desktopQuery.removeListener(updateFiltersOpen);
+  }, []);
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))].sort(),
@@ -211,92 +227,99 @@ const Products = () => {
 
               <Row className="g-4">
                 <Col lg={3} xl={2}>
-                  <aside className="bg-white rounded-3 p-3">
-                    <div id="category-filters" className="mb-4">
-                      <h2 className="small fw-semibold text-uppercase mb-3">Category</h2>
-                      {loading ? (
-                        <Spinner animation="border" size="sm" aria-label="Loading categories" />
-                      ) : (
-                        <Form>
-                          {categories.map((category) => (
-                            <Form.Check
-                              key={category}
-                              type="checkbox"
-                              id={`category-${category}`}
-                              label={category.replaceAll('-', ' ')}
-                              checked={selectedCategories.includes(category)}
-                              onChange={() => toggleCategory(category)}
-                              className="small mb-2 text-capitalize"
-                            />
-                          ))}
-                        </Form>
-                      )}
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h2 className="small fw-semibold text-uppercase mb-0">Price range</h2>
-                        <span className="small text-secondary">${maximumPrice}</span>
+                  <details
+                    className="products-filter-sidebar bg-white rounded-3 p-3"
+                    open={filtersOpen}
+                    onToggle={(event) => setFiltersOpen(event.currentTarget.open)}
+                  >
+                    <summary className="products-filter-summary fw-semibold mb-3">Filters</summary>
+                    <div className="products-filter-content">
+                      <div id="category-filters" className="mb-4">
+                        <h2 className="small fw-semibold text-uppercase mb-3">Category</h2>
+                        {loading ? (
+                          <Spinner animation="border" size="sm" aria-label="Loading categories" />
+                        ) : (
+                          <Form>
+                            {categories.map((category) => (
+                              <Form.Check
+                                key={category}
+                                type="checkbox"
+                                id={`category-${category}`}
+                                label={category.replaceAll('-', ' ')}
+                                checked={selectedCategories.includes(category)}
+                                onChange={() => toggleCategory(category)}
+                                className="small mb-2 text-capitalize"
+                              />
+                            ))}
+                          </Form>
+                        )}
                       </div>
-                      <Form.Range
-                        min={0}
-                        max={1000}
-                        step={10}
-                        value={maximumPrice}
-                        aria-label="Maximum product price"
-                        onChange={(event) => {
-                          setCurrentPage(1);
-                          setMaximumPrice(Number(event.target.value));
-                        }}
-                      />
-                      <div className="d-flex justify-content-between text-secondary" style={{ fontSize: '0.75rem' }}>
-                        <span>$0</span>
-                        <span>$1,000+</span>
+
+                      <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <h2 className="small fw-semibold text-uppercase mb-0">Price range</h2>
+                          <span className="small text-secondary">${maximumPrice}</span>
+                        </div>
+                        <Form.Range
+                          min={0}
+                          max={1000}
+                          step={10}
+                          value={maximumPrice}
+                          aria-label="Maximum product price"
+                          onChange={(event) => {
+                            setCurrentPage(1);
+                            setMaximumPrice(Number(event.target.value));
+                          }}
+                        />
+                        <div className="d-flex justify-content-between text-secondary" style={{ fontSize: '0.75rem' }}>
+                          <span>$0</span>
+                          <span>$1,000+</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="mb-4">
-                      <h2 className="small fw-semibold text-uppercase mb-2">Rating</h2>
-                      <Form.Select
-                        aria-label="Minimum product rating"
-                        value={minimumRating}
-                        onChange={(event) => {
-                          setCurrentPage(1);
-                          setMinimumRating(Number(event.target.value));
-                        }}
-                        size="sm"
+                      <div className="mb-4">
+                        <h2 className="small fw-semibold text-uppercase mb-2">Rating</h2>
+                        <Form.Select
+                          aria-label="Minimum product rating"
+                          value={minimumRating}
+                          onChange={(event) => {
+                            setCurrentPage(1);
+                            setMinimumRating(Number(event.target.value));
+                          }}
+                          size="sm"
+                        >
+                          <option value={0}>All ratings</option>
+                          <option value={4}>★★★★☆ &amp; Up</option>
+                          <option value={4.5}>★★★★★ &amp; Up</option>
+                        </Form.Select>
+                      </div>
+
+                      <div className="mb-4">
+                        <h2 className="small fw-semibold text-uppercase mb-2">Brand</h2>
+                        <Form.Select
+                          aria-label="Filter by brand"
+                          value={selectedBrand}
+                          onChange={(event) => {
+                            setCurrentPage(1);
+                            setSelectedBrand(event.target.value);
+                          }}
+                          size="sm"
+                        >
+                          <option value="all">All Brands</option>
+                          {brands.map((brand) => <option key={brand} value={brand}>{brand}</option>)}
+                        </Form.Select>
+                      </div>
+
+                      <Button
+                        variant="light"
+                        className="w-100 small"
+                        onClick={clearFilters}
+                        style={{ backgroundColor: '#e8edff', color: '#3325c8' }}
                       >
-                        <option value={0}>All ratings</option>
-                        <option value={4}>★★★★☆ &amp; Up</option>
-                        <option value={4.5}>★★★★★ &amp; Up</option>
-                      </Form.Select>
+                        Clear Filters
+                      </Button>
                     </div>
-
-                    <div className="mb-4">
-                      <h2 className="small fw-semibold text-uppercase mb-2">Brand</h2>
-                      <Form.Select
-                        aria-label="Filter by brand"
-                        value={selectedBrand}
-                        onChange={(event) => {
-                          setCurrentPage(1);
-                          setSelectedBrand(event.target.value);
-                        }}
-                        size="sm"
-                      >
-                        <option value="all">All Brands</option>
-                        {brands.map((brand) => <option key={brand} value={brand}>{brand}</option>)}
-                      </Form.Select>
-                    </div>
-
-                    <Button
-                      variant="light"
-                      className="w-100 small"
-                      onClick={clearFilters}
-                      style={{ backgroundColor: '#e8edff', color: '#3325c8' }}
-                    >
-                      Clear Filters
-                    </Button>
-                  </aside>
+                  </details>
                 </Col>
 
                 <Col lg={9} xl={10}>
